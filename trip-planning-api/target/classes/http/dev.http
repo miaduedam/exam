@@ -1,0 +1,95 @@
+### A simple get request to the test endpoint. No need for login
+GET {{url}}/auth/test/
+
+### Populate the database with some data
+GET {{url}}/trips/populate/
+
+### Create a new user - this one will only get a USER role by default
+POST {{url}}/auth/register/
+
+{
+    "username": "user",
+    "password": "test123"
+}
+
+###
+POST {{url}}/auth/login/
+
+{
+    "username": "user",
+    "password": "test123"
+}
+
+> {%
+    client.global.set("jwt_token", response.body.token);
+    console.log("JWT Token:", client.global.get("jwt_token"));
+%}
+
+###
+GET {{url}}/protected/user_demo/
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+###
+GET {{url}}/protected/admin_demo/
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Add admin role to user
+POST {{url}}/auth/user/addrole/
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+    "role": "admin"
+}
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+
+
+### Get all candidates
+GET {{url}}/candidates
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Get candidate by ID
+GET {{url}}/candidates/2
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Create new candidate
+POST {{url}}/candidates
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "name": "Holger Troels",
+  "phone": "71700749",
+  "educationBackground": "Computer Science"
+}
+
+### Update candidate
+PUT {{url}}/candidates/1
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "name": "Mia Updated",
+  "phone": "87651234",
+  "educationBackground": "Bachelor in Software Engineering"
+}
+
+### Link skill til candidate
+PUT {{url}}/candidates/1/skills/2
+Authorization: Bearer {{jwt_token}}
+
+### Filter by skill category
+GET {{url}}/candidates?category=PROG_LANG
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Report: top by popularity
+GET {{url}}/reports/candidates/top-by-popularity
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
